@@ -1,7 +1,9 @@
 package com.nhpdev.backendservice.service;
 
+import com.nhpdev.backendservice.dto.request.ChangePasswordRequest;
 import com.nhpdev.backendservice.dto.request.UserCreateRequest;
 import com.nhpdev.backendservice.dto.request.UserUpdateRequest;
+import com.nhpdev.backendservice.dto.response.ChangePasswordResponse;
 import com.nhpdev.backendservice.dto.response.UserCreateResponse;
 import com.nhpdev.backendservice.dto.response.UserDetailResponse;
 import com.nhpdev.backendservice.dto.response.UserUpdateResponse;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService{
     private final UserRepository userRepository;
+    private final AuthenticationServiceImp authenticationServiceImp;
 
     private UserDetailResponse mapToResponse(User user) {
         return UserDetailResponse.builder()
@@ -51,7 +54,7 @@ public class UserServiceImp implements UserService{
         var user = User.builder()
                         .email(request.email())
                         .username(request.username())
-                        .password(request.password())
+                        .password(authenticationServiceImp.hashPassword(request.password()))
                 .build();
         userRepository.save(user);
         return UserCreateResponse.builder()
@@ -73,6 +76,21 @@ public class UserServiceImp implements UserService{
                 .email(user.getEmail())
                 .build();
     }
+
+    @Override
+    public ChangePasswordResponse changePassword(String id, ChangePasswordRequest request) {
+        if(!userRepository.existsById(id))
+            throw new RuntimeException("User does not exist");
+        User user = userRepository.findById(id).get();
+        if(!authenticationServiceImp.verifyPassword(request.oldPassword(), user.getPassword()))
+            throw new RuntimeException("Old Password does not match");
+        user.setPassword(authenticationServiceImp.hashPassword(request.newPassword()));
+        userRepository.save(user);
+        return ChangePasswordResponse.builder()
+                .newPassword(request.newPassword())
+                .build();
+    }
+
 
     @Override
     public void deleteUser(String id) {
