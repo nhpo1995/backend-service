@@ -3,9 +3,10 @@ package com.nhpdev.backendservice.service;
 import com.nhpdev.backendservice.dto.request.AuthenticationRequest;
 import com.nhpdev.backendservice.dto.response.AuthenticationResponse;
 import com.nhpdev.backendservice.entity.User;
-import com.nhpdev.backendservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,23 +14,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationServiceImp implements AuthenticationService{
 
-    private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         //get user by email
-        User user = userRepository.getUserByEmail(request.email());
-        if (user == null)
-            throw new RuntimeException("User's email is not exist");
-        var rawPassword = request.password();
-        var hashedPassword = user.getPassword();
-        //Compare 2 password
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        if(!encoder.matches(rawPassword, hashedPassword))
-            throw new RuntimeException("Password does not match");
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.email(), request.password());
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        User user = (User) authentication.getPrincipal();
+        var token = jwtService.generateToken(user.getId());
         return AuthenticationResponse.builder()
-                .token("Token")
+                .token(token)
                 .build();
     }
 

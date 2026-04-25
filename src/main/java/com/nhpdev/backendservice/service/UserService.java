@@ -7,7 +7,6 @@ import com.nhpdev.backendservice.dto.response.ChangePasswordResponse;
 import com.nhpdev.backendservice.dto.response.UserCreateResponse;
 import com.nhpdev.backendservice.dto.response.UserDetailResponse;
 import com.nhpdev.backendservice.dto.response.UserUpdateResponse;
-import com.nhpdev.backendservice.entity.User;
 
 import java.util.List;
 
