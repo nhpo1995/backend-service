@@ -11,20 +11,21 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Component
 public class CustomJwtDecoder implements JwtDecoder {
 
-    @Value("${jwt.secret-key}")
-    private String secretKey;
+    @Value("${jwt.access-key}")
+    private String accessToken;
 
     private NimbusJwtDecoder nimbusJwtDecoder;
 
     @PostConstruct
     public void init() {
         if(Objects.isNull(nimbusJwtDecoder)) {
-            SecretKey key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+            SecretKey key = new SecretKeySpec(accessToken.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             nimbusJwtDecoder = NimbusJwtDecoder
                     .withSecretKey(key)
                     .macAlgorithm(MacAlgorithm.HS256)

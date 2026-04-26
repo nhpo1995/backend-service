@@ -23,7 +23,7 @@ public class SecurityConfiguration {
 
     private final CustomJwtDecoder customJwtDecoder;
     private final String[] POST_WHITELIST = {
-            "/api/v1/auth/login",
+            "/api/v1/auth/**",
             "/api/v1/users"
     };
 

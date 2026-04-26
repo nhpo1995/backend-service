@@ -1,5 +1,6 @@
 package com.nhpdev.backendservice.controller;
 
+import com.nhpdev.backendservice.dto.request.AccessTokenRequest;
 import com.nhpdev.backendservice.dto.request.AuthenticationRequest;
 import com.nhpdev.backendservice.dto.response.ApiResponse;
 import com.nhpdev.backendservice.dto.response.AuthenticationResponse;
@@ -26,6 +27,15 @@ public class AuthenticationController {
                 .success(true)
                 .data(authenticationServiceImp.authenticate(request))
                 .code(HttpStatus.OK.value())
+                .build();
+    }
+
+    @PostMapping("/refresh-accesstoken")
+    public ApiResponse<AuthenticationResponse> reFreshToken(@RequestBody AccessTokenRequest request) {
+        return ApiResponse.<AuthenticationResponse>builder()
+                .success(true)
+                .data(authenticationServiceImp.getAccessToken(request))
+                .code(200)
                 .build();
     }
 }
