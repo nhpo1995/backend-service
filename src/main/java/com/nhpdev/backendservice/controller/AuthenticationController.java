@@ -4,7 +4,7 @@ import com.nhpdev.backendservice.dto.request.AccessTokenRequest;
 import com.nhpdev.backendservice.dto.request.AuthenticationRequest;
 import com.nhpdev.backendservice.dto.response.ApiResponse;
 import com.nhpdev.backendservice.dto.response.AuthenticationResponse;
-import com.nhpdev.backendservice.service.AuthenticationServiceImp;
+import com.nhpdev.backendservice.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "Authentication Api")
 public class AuthenticationController {
-    private final AuthenticationServiceImp authenticationServiceImp;
+    private final AuthenticationService authenticationService;
 
     @Tag(name = "LOGIN")
     @PostMapping("/login")
     public ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         return ApiResponse.<AuthenticationResponse>builder()
                 .success(true)
-                .data(authenticationServiceImp.authenticate(request))
+                .data(authenticationService.authenticate(request))
                 .code(HttpStatus.OK.value())
                 .build();
     }
@@ -34,7 +34,7 @@ public class AuthenticationController {
     public ApiResponse<AuthenticationResponse> reFreshToken(@RequestBody AccessTokenRequest request) {
         return ApiResponse.<AuthenticationResponse>builder()
                 .success(true)
-                .data(authenticationServiceImp.getAccessToken(request))
+                .data(authenticationService.getAccessToken(request))
                 .code(200)
                 .build();
     }

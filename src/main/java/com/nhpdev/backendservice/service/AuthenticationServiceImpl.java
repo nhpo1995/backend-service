@@ -17,7 +17,7 @@ import java.text.ParseException;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationServiceImp implements AuthenticationService{
+public class AuthenticationServiceImpl implements AuthenticationService{
 
     private final PasswordEncoder encoder;
     private final JwtService jwtService;

@@ -18,14 +18,14 @@ import java.util.Objects;
 public class CustomJwtDecoder implements JwtDecoder {
 
     @Value("${jwt.access-key}")
-    private String accessToken;
+    private String accessKey;
 
     private NimbusJwtDecoder nimbusJwtDecoder;
 
     @PostConstruct
     public void init() {
         if(Objects.isNull(nimbusJwtDecoder)) {
-            SecretKey key = new SecretKeySpec(accessToken.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            SecretKey key = new SecretKeySpec(accessKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             nimbusJwtDecoder = NimbusJwtDecoder
                     .withSecretKey(key)
                     .macAlgorithm(MacAlgorithm.HS256)

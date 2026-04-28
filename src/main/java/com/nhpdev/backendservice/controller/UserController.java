@@ -4,7 +4,7 @@ import com.nhpdev.backendservice.dto.request.ChangePasswordRequest;
 import com.nhpdev.backendservice.dto.request.UserCreateRequest;
 import com.nhpdev.backendservice.dto.request.UserUpdateRequest;
 import com.nhpdev.backendservice.dto.response.*;
-import com.nhpdev.backendservice.service.UserServiceImp;
+import com.nhpdev.backendservice.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "User Api", description = "All user CRUD apis")
 public class UserController {
-    private final UserServiceImp userService;
+    private final UserService userService;
     //GET
     @Tag(name = "GET ALL")
     @GetMapping

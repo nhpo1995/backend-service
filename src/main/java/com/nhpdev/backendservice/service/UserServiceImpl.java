@@ -17,9 +17,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImp implements UserService{
+public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
-    private final AuthenticationServiceImp authenticationServiceImp;
+    private final AuthenticationService authenticationService;
 
     private UserDetailResponse mapToResponse(User user) {
         return UserDetailResponse.builder()
@@ -53,7 +53,7 @@ public class UserServiceImp implements UserService{
         var user = User.builder()
                         .email(request.email())
                         .username(request.username())
-                        .password(authenticationServiceImp.hashPassword(request.password()))
+                        .password(authenticationService.hashPassword(request.password()))
                 .build();
         userRepository.save(user);
         return UserCreateResponse.builder()
@@ -81,9 +81,9 @@ public class UserServiceImp implements UserService{
         if(!userRepository.existsById(id))
             throw new RuntimeException("User does not exist");
         User user = userRepository.findById(id).get();
-        if(!authenticationServiceImp.verifyPassword(request.oldPassword(), user.getPassword()))
+        if(!authenticationService.verifyPassword(request.oldPassword(), user.getPassword()))
             throw new RuntimeException("Old Password does not match");
-        user.setPassword(authenticationServiceImp.hashPassword(request.newPassword()));
+        user.setPassword(authenticationService.hashPassword(request.newPassword()));
         userRepository.save(user);
         return ChangePasswordResponse.builder()
                 .newPassword(request.newPassword())

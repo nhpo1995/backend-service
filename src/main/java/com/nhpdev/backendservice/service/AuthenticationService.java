@@ -10,5 +10,5 @@ public interface AuthenticationService {
     AuthenticationResponse authenticate(AuthenticationRequest request);
     String hashPassword(String rawPassword);
     boolean verifyPassword(String rawPassword, String hashedPassword);
-    AuthenticationResponse getAccessToken(AccessTokenRequest request) throws ParseException;
+    AuthenticationResponse getAccessToken(AccessTokenRequest request);
 }
